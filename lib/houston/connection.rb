@@ -30,10 +30,12 @@ module Houston
       @passphrase = passphrase
     end
 
-    def open
+    def open(options = {})
       return false if open?
 
-      @socket = TCPSocket.new(@uri.host, @uri.port)
+      # @socket = TCPSocket.new(@uri.host, @uri.port)
+      @socket = Socket.tcp(@uri.host, @uri.port,
+                           connect_timeout: options[:timeout])
 
       context = OpenSSL::SSL::SSLContext.new
       context.key = OpenSSL::PKey::RSA.new(@certificate, @passphrase)
